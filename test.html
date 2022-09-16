@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.css">
+<style type="text/css">
+/* タスクのラベルのスタイル */
+.gantt .bar-label {
+  font-weight: bold;
+}
+/* タスクのバースタイル */
+.gantt .bar-progress {
+  fill: #ff6060;
+}
+/* 今日のバーのスタイル */
+.gantt .today-highlight {
+  fill: #f9546b;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/frappe-gantt/0.5.0/frappe-gantt.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+ 
+
+
+$(function(){
+    $("#month").hide();
+    $("#year").hide();
+    $("#week").hide();
+    $("#day").hide();
+    $("#refresh").hide();
+       csv_test();
+    // test2();
+    // test3();
+    // test4();
+// gantt.change_view_mode('Week')
+
+});
+async function csv_test(){
+    await   $.ajax({
+type:"POST",
+url:"json_pass.php",
+data:{csv:"pass.csv"},
+async: false,
+dataType:"json"
+}).done(function(data){
+// console.log(JSON.stringify(data));
+var data=data;
+$.each(data,function(event){
+    console.log(data[event].csv);
+    var paragraph = $(`<svg id="gantt${event}"></svg>`);
+    $('body').prepend(paragraph);
+     test2(data[event].csv,event,data[event].user);
+});
+}).fail(function(XMLHttpRequest, status, e){
+        alert("Ajaxを用いてJSONを取得することができませんでした。");
+});
+
+
+}
+async function test2(pass,i,user){
+ await   $.ajax({
+type:"POST",
+url:"json.php",
+data:{csv:`${pass}`,user:`${user}`},
+async: false,
+dataType:"json"
+}).done(function(data){
+console.log(JSON.stringify(data));
+var gantt = new Gantt(`#gantt${i}`, data);
+$("#month").show();
+    $("#week").show();
+    $("#day").show();
+    $("#refresh").show();
+    $("#year").show();
+
+    $("#month").on("click",function(){ 
+
+    gantt.change_view_mode('Month')
+});
+$("#week").on("click",function(){ 
+
+
+    gantt.change_view_mode('Week')});
+
+    $("#day").on("click",function(){ 
+
+
+    gantt.change_view_mode('Day')});
+    $("#year").on("click",function(){ 
+
+
+gantt.change_view_mode('Year')});
+
+    $("#refresh").on("click",function(){ 
+
+
+gantt.refresh(data)});
+}).fail(function(XMLHttpRequest, status, e){
+        alert("Ajaxを用いてJSONを取得することができませんでした。");
+});
+
+
+}
+
+// async function test3(){
+//  await   $.ajax({
+// type:"POST",
+// url:"json.php",
+// data:{csv:"todo2.csv"},
+// async: false,
+// dataType:"json"
+// }).done(function(data){
+// console.log(JSON.stringify(data));
+// var gantt = new Gantt("#gantt2", data);
+// $("#month").show();
+//     $("#week").show();
+//     $("#day").show();
+//     $("#refresh").show();
+//     $("#year").show();
+
+//     $("#month").on("click",function(){ 
+
+//     gantt.change_view_mode('Month')
+// });
+// $("#week").on("click",function(){ 
+
+
+//     gantt.change_view_mode('Week')});
+
+//     $("#day").on("click",function(){ 
+
+
+//     gantt.change_view_mode('Day')});
+//     $("#year").on("click",function(){ 
+
+
+// gantt.change_view_mode('Year')});
+
+//     $("#refresh").on("click",function(){ 
+
+
+// gantt.refresh(data)});
+// }).fail(function(XMLHttpRequest, status, e){
+//     alert("Ajaxを用いてJSONを取得することができませんでした。");
+// });
+
+
+// }
+
+// async function test4(){
+//  await   $.ajax({
+// type:"POST",
+// url:"json.php",
+// data:{csv:"world_todo.csv"},
+// async: false,
+// dataType:"json"
+// }).done(function(data){
+// console.log(JSON.stringify(data));
+// var gantt = new Gantt("#gantt3", data);
+// $("#month").show();
+//     $("#week").show();
+//     $("#day").show();
+//     $("#refresh").show();
+//     $("#year").show();
+
+//     $("#month").on("click",function(){ 
+
+//     gantt.change_view_mode('Month')
+// });
+// $("#week").on("click",function(){ 
+
+
+//     gantt.change_view_mode('Week')});
+//     $("#day").on("click",function(){ 
+
+
+// gantt.change_view_mode('Day')});
+// $("#year").on("click",function(){ 
+
+
+// gantt.change_view_mode('Year')});
+
+ 
+    
+//     $("#refresh").on("click",function(){ 
+
+
+// gantt.refresh(data)});
+// }).fail(function(XMLHttpRequest, status, e){
+//     alert("Ajaxを用いてJSONを取得することができませんでした。");
+// });
+
+
+// }
+
+    </script>
+    <title>Document</title>
+</head>
+<body>
+
+    <button id="year"  style="width:50px;height:30px;font-size: 15px;">year</button>
+
+    <button id="month"  style="width:50px;height:30px;font-size: 15px;">month</button>
+    <button id="week"  style="width:50px;height:30px;font-size: 15px;">week</button>
+    <button id="day"  style="width:50px;height:30px;font-size: 15px;">day</button>
+    <button id="refresh"  style="width:60px;height:30px;font-size: 15px;">refresh</button>
+
+    
+
+</body>
+</html>
